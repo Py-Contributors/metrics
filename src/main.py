@@ -1,4 +1,7 @@
 import numpy as np
+from typing import Tuple
+
+from src.utils import preprocessing_and_sanitization
 
 
 def r2_score(actual: np.array, predicted: np.array) -> float:
@@ -10,13 +13,7 @@ def r2_score(actual: np.array, predicted: np.array) -> float:
         actual: array-like, shape = [n_samples]
         predicted: array-like, shape = [n_samples]
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
     
     e1 = np.sum((actual - predicted) ** 2)
     e2 = np.sum((actual - np.mean(actual)) ** 2)
@@ -32,13 +29,7 @@ def mean_squared_error(actual: np.array, predicted: np.array) -> float:
         actual: array-like, shape = [n_samples]
         predicted: array-like, shape = [n_samples]
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
     
     return np.mean((actual - predicted) ** 2)
 
@@ -51,13 +42,7 @@ def mean_absolute_error(actual: np.array, predicted: np.array) -> float:
         actual: array-like, shape = [n_samples]
         predicted: array-like, shape = [n_samples]
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
     
     return np.mean(np.abs(actual - predicted))
 
@@ -70,13 +55,7 @@ def root_mean_squared_error(actual: np.array, predicted: np.array) -> float:
         actual: array-like, shape = [n_samples]
         predicted: array-like, shape = [n_samples]
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
     
     return np.sqrt(np.mean((actual - predicted) ** 2))
 
@@ -95,13 +74,7 @@ def accuracy_score(actual: np.array, predicted: np.array) -> float:
     -------
         score: float
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
 
     return np.mean(actual == predicted)
 
@@ -118,13 +91,7 @@ def confusion_metrics(actual: np.array, predicted: np.array) -> np.array:
     -------
         metrics: array-like, shape = [n_classes, n_classes]
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
 
     classes = np.unique(actual)
     metrics = np.zeros((classes.size, classes.size))
@@ -148,13 +115,7 @@ def precision(actual: np.array, predicted: np.array) -> float:
     -------
         score: array-like, shape = [n_classes]
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
 
     classes = np.unique(actual)
     metrics = confusion_metrics(actual, predicted)
@@ -178,13 +139,7 @@ def recall(actual: np.array, predicted: np.array) -> float:
     -------
         score: array-like, shape = [n_classes]
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
 
     classes = np.unique(actual)
     metrics = confusion_metrics(actual, predicted)
@@ -196,13 +151,8 @@ def recall(actual: np.array, predicted: np.array) -> float:
     return np.mean(score)
 
 def f1_score(actual: np.array, predicted: np.array) -> float:
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
     
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
     
     precision_ = precision(actual, predicted)
     recall_ = recall(actual, predicted)
@@ -222,16 +172,34 @@ def auc(actual: np.array, predicted: np.array) -> float:
     -------
         score: float
     """
-    if isinstance(actual, list):
-        actual = np.array(actual)
-    if isinstance(predicted, list):
-        predicted = np.array(predicted)
-
-    if actual.shape != predicted.shape:
-        raise ValueError("actual and predicted must have the same shape")
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
 
     classes = np.unique(actual)
     if classes.size != 2:
         raise ValueError("auc only works for binary classification")
 
-    return np.mean((actual == classes[0]) & (predicted == classes[1]))    
+    return np.mean((actual == classes[0]) & (predicted == classes[1]))
+
+def log_loss(actual: np.array, predicted: np.array) -> float:
+    """ Logarithmic loss.
+    
+    Parameters
+    ----------
+        actual: array-like, shape = [n_samples]
+        predicted: array-like, shape = [n_samples]
+    
+    Returns
+    -------
+        score: float
+    """
+    actual, predicted = preprocessing_and_sanitization(actual, predicted)
+
+    return -np.mean(actual * np.log(predicted) + (1 - actual) * np.log(1 - predicted))
+
+
+# call log_loss
+
+arr1 = np.array([0, 0, 1, 1])
+arr2 = np.array([0.1, 0.4, 0.35, 0.8])
+
+print(log_loss(arr1, arr2))
