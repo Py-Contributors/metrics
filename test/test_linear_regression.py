@@ -3,7 +3,7 @@ import numpy as np
 import sys
 sys.path.append('.')
 
-from src.main import r2_score
+from src.regression import r2_score
 
 
 class LinearRegressionTest(unittest.TestCase):
