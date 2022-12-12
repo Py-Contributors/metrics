@@ -1,4 +1,12 @@
-# Metrics
+<p align="center">
+  <a href="https://py-contributors.github.io/audiobook/"><img src="https://capsule-render.vercel.app/api?type=rect&color=009ACD&height=100&section=header&text=Metrics&fontSize=80%&fontColor=ffffff" alt="website title image"></a>
+</p>
+
+<p align="center">
+    <a href="https://twitter.com/pycontributors"><img src="https://img.shields.io/twitter/follow/pycontributors?style=social" alt="Twitter" /></a>
+    <a href="https://github.com/codeperfectplus?tab=followers"><img src="https://img.shields.io/github/followers/codeperfectplus.svg?style=social&label=Follow&maxAge=2592000"/></a>
+</p>
+</br>
 
 Implementation of various metrics for regression and classification problems. For Data Science and Machine Learning projects, it is important to have a good understanding of the metrics used to evaluate the performance of the model. This repository contains the implementation of various metrics for regression and classification problems. The metrics are implemented in Python and are available as a Python package. The metrics are implemented using NumPy and are implemented from scratch. The metrics are implemented using the formulae given in the Wikipedia pages for the respective metrics. The metrics are implemented in the following order:
 
